@@ -10,7 +10,7 @@ import (
 
 var people model.Person
 
-func CreatePerson(request *http.Request) error {
+func CreatePerson(request *http.Request) interface{} {
 
 	envs := database.LoadEnv()
 
@@ -28,12 +28,13 @@ func CreatePerson(request *http.Request) error {
 		return err
 	}
 	
-	_, err = collection.InsertOne(context.TODO(),people)
+	result, err := collection.InsertOne(context.TODO(),people)
 	if err != nil {
 		return err
 	}
 
-	return nil
+	return result
+
 
 }
 

@@ -21,10 +21,11 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 func GetPerson(w http.ResponseWriter, r *http.Request) {}
 
 func CreatePerson(w http.ResponseWriter, request *http.Request) {
-	defer request.Body.Close()
-	service.CreatePerson(request)
 	
-	json.NewEncoder(w).Encode(people)
+	defer request.Body.Close()
+	result := service.CreatePerson(request)
+	
+	json.NewEncoder(w).Encode(result)
 
 }
 
