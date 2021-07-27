@@ -8,9 +8,11 @@ import (
 	"github.com/jubarodrigo/api-rest/model"
 )
 
-var people []model.Person
+var people model.Person
 
 func CreatePerson(request *http.Request) error {
+
+	envs := database.LoadEnv()
 
 
 	client, err := database.GetMongoClient()
@@ -18,9 +20,15 @@ func CreatePerson(request *http.Request) error {
 		return err
 	}
 
-	collection := client.Database(database.DB).Collection(database.PERSON)
+	collection := client.Database(envs["MG_DATABASE"]).Collection(database.PERSON)
 
-	_, err = collection.InsertOne(context.TODO(),json.NewDecoder(request.Body))
+	defer request.Body.Close()
+
+	if err := json.NewDecoder(request.Body).Decode(&people); err != nil {
+		return err
+	}
+	
+	_, err = collection.InsertOne(context.TODO(),people)
 	if err != nil {
 		return err
 	}

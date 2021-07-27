@@ -2,7 +2,9 @@ package database
 
 import (
 	"context"
+	"log"
 	"sync"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -16,18 +18,19 @@ var clientInstanceError error
 var mongoOnce sync.Once
 //I have used below constants just to hold required database config's.
 
+
 const (
-	CONNECTIONSTRING = "mongodb+srv://rgjuba:#juba0731@cluster0.bj90k.mongodb.net/"
-	DB               = "mongodb"
-	PERSON           = "person"
+	PERSON = "person"
 )
 
 //GetMongoClient - Return mongodb connection to work with
 func GetMongoClient() (*mongo.Client, error) {
-	//Perform connection creation operation only once.
+
+	envs := LoadEnv()
+
 	mongoOnce.Do(func() {
 		// Set client options
-		clientOptions := options.Client().ApplyURI(CONNECTIONSTRING)
+		clientOptions := options.Client().ApplyURI(envs["CONNECTIONSTRING"])
 		// Connect to MongoDB
 		client, err := mongo.Connect(context.TODO(), clientOptions)
 		if err != nil {
@@ -42,5 +45,16 @@ func GetMongoClient() (*mongo.Client, error) {
 	})
 	return clientInstance, clientInstanceError
 }
+
+func LoadEnv() map[string]string { 
+
+	envs, err := godotenv.Read(".env")
+	if err != nil {
+		log.Fatalf("Error reading .env file")
+	  }
+
+	return envs
+}
+
 
 

@@ -11,9 +11,9 @@ var people []model.Person
 
 func GetPeople(w http.ResponseWriter, r *http.Request) {
 
-	people = append(people, model.Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &model.Address{City: "City X", State: "State X"}})
-	people = append(people, model.Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &model.Address{City: "City Z", State: "State Y"}})
-	people = append(people, model.Person{ID: "3", Firstname: "Francis", Lastname: "Sunday"})
+	// people = append(people, model.Person{ID: "1", Firstname: "John", Lastname: "Doe", Address: &model.Address{City: "City X", State: "State X"}})
+	// people = append(people, model.Person{ID: "2", Firstname: "Koko", Lastname: "Doe", Address: &model.Address{City: "City Z", State: "State Y"}})
+	// people = append(people, model.Person{ID: "3", Firstname: "Francis", Lastname: "Sunday"})
 
 	json.NewEncoder(w).Encode(people)
 }
@@ -21,8 +21,10 @@ func GetPeople(w http.ResponseWriter, r *http.Request) {
 func GetPerson(w http.ResponseWriter, r *http.Request) {}
 
 func CreatePerson(w http.ResponseWriter, request *http.Request) {
-
+	defer request.Body.Close()
 	service.CreatePerson(request)
+	
+	json.NewEncoder(w).Encode(people)
 
 }
 
